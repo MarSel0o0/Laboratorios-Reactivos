@@ -15,4 +15,4 @@ Cada uno, para cada laboratorio, deberá crear una rama con la siguiente sintaxi
 
 {nombre}/lab{n° del laboratorio}
 
->> Por ejemplo, para el laboratorio 1, mi rama es `marselo/lab1`
+> Por ejemplo, para el laboratorio 1, mi rama es `marselo/lab1`
