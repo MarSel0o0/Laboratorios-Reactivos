@@ -8,3 +8,9 @@ Los laboratorios se nombrarán de la siguiente forma:
 - laboratorio 2
 - laboratorio 3
 - ...
+
+## Convención de las ramas
+
+Cada uno, para cada laboratorio, deberá crear una rama con la siguiente sintaxis
+
+{nombre}/laboratorio{número actual del laboratorio}
