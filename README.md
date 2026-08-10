@@ -13,4 +13,6 @@ Los laboratorios se nombrarán de la siguiente forma:
 
 Cada uno, para cada laboratorio, deberá crear una rama con la siguiente sintaxis
 
-{nombre}/laboratorio{número actual del laboratorio}
+{nombre}/lab{n° del laboratorio}
+
+>> Por ejemplo, para el laboratorio 1, mi rama es `marselo/lab1`
