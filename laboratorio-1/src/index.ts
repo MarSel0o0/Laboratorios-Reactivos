@@ -31,8 +31,6 @@
  * =============================
  */
 
-const data = require('../bakemons.json') as Bakemon[]
-
 /**
  * Para declarar los tipos literales correspondientes a todos los tipos
  * posibles para `type` y `secondary_type`, utilizo un array y coloco `as const` al final,
