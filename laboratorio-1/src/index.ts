@@ -57,12 +57,26 @@
 
 const data = require('../bakemons.json') as Bakemon[]
 
-const TYPES = [
-    "NORMAL", "FIRE", "WATER", "GRASS", "ELECTRIC", "ICE",
-    "FIGHTING", "POISON", "GROUND", "FLYING", "PSYCHIC",
-    "BUG", "ROCK", "GHOST", "DARK", "DRAGON", "STEEL", "FAIRY"] as const;
-
-type Type = typeof TYPES[number];
+enum Type {
+  Normal = "NORMAL",
+  Fire = "FIRE",
+  Water = "WATER",
+  Electric = "ELECTRIC",
+  Grass = "GRASS",
+  Ice = "ICE",
+  Fighting = "FIGHTING",
+  Poison = "POISON",
+  Ground = "GROUND",
+  Flying = "FLYING",
+  Psychic = "PSYCHIC",
+  Bug = "BUG",
+  Rock = "ROCK",
+  Ghost = "GHOST",
+  Dragon = "DRAGON",
+  Dark = "DARK",
+  Steel = "STEEL",
+  Fairy = "FAIRY",
+}
 
 interface Stats {
   hp: number;
@@ -76,7 +90,8 @@ interface Stats {
 interface Move {
   name: string;
   description: string;
-  power: number | null; // la clave siempre está presente en bakemons.JSON, pero puede ser null 
+  power: number | null; // si usamos null
+  // power?: number; si usamos undefined !!
   pp: number;
   priority: number;
 }
@@ -106,21 +121,26 @@ function filterByType(bakemons: Bakemon[], type: Type): Bakemon[] {
  * =============================
  */
 
-interface BakemonWithBST extends Bakemon {
+interface BakemonBST extends Bakemon {
   bst: number;
 }
 
-function calculateBST(bakemon: Bakemon): number {
-  const { hp, atk, def, sp_atk, sp_def, speed } = bakemon.stats;
-  return hp + atk + def + sp_atk + sp_def + speed;
+function calculateBST(bakemon: Bakemon): BakemonBST {
+  const bst = Object.keys(bakemon.stats).reduce(
+    (sum, key) => sum + bakemon.stats[key as keyof Stats],
+    0,
+  );
+
+  return {
+    ...bakemon,
+    bst: bst,
+  };
 }
 
-function addBST(bakemons: Bakemon[]): BakemonWithBST[] {
-  return bakemons.map(
-    (bakemon: Bakemon): BakemonWithBST => ({
-      ...bakemon, bst: calculateBST(bakemon),
-    })
-  );
+function addBST(bakemons: Bakemon[]): BakemonBST[] {
+  return bakemons.map((bakemon) => {
+    return calculateBST(bakemon);
+  });
 }
 
 /**
@@ -129,35 +149,49 @@ function addBST(bakemons: Bakemon[]): BakemonWithBST[] {
  * =============================
  */
 
-/**
- * Igual que filterByType, pero tipada para BakemonWithBST, de modo que el
- * campo `bst` no se pierda al filtrar, así no se calcula el BST de nuevo, si no que empezamos con la lista de
- * BakemonWithBST ya calculada.
- */
-function filterByTypeBST(bakemons: BakemonWithBST[], type: Type): BakemonWithBST[] {
-  return bakemons.filter((bakemon) => bakemon.type === type || bakemon.secondary_type === type)
+type BakemonByType = {
+  [key in Type]?: BakemonBST;
+};
+
+function getBestBakemonByType(bakemons: Bakemon[]) {
+  const bestBakemon: BakemonByType = {};
+  const bakemonsBst = addBST(bakemons);
+
+  bakemonsBst.forEach((bakemon) => {
+    if (bakemon.bst > (bestBakemon[bakemon.type]?.bst ?? 0))
+      bestBakemon[bakemon.type] = bakemon;
+    if (
+      bakemon.secondary_type &&
+      bakemon.bst > (bestBakemon[bakemon.secondary_type]?.bst ?? 0)
+    )
+      bestBakemon[bakemon.secondary_type] = bakemon;
+  });
+
+  return bestBakemon;
 }
-
-function findStrongestByType(bakemons: BakemonWithBST[]): Partial<Record<Type, BakemonWithBST>> {
-  return TYPES.reduce((acc: Partial<Record<Type, BakemonWithBST>>, type: Type): Partial<Record<Type, BakemonWithBST>> => {
-    const candidates: BakemonWithBST[] = filterByTypeBST(bakemons, type);
-
-    if (candidates.length === 0) return acc;
-
-    acc[type] = candidates.reduce(
-      (strongest: BakemonWithBST, current: BakemonWithBST): BakemonWithBST =>
-        current.bst > strongest.bst ? current : strongest,
-      candidates[0]
-    );
-
-    return acc;
-  }, {} as Partial<Record<Type, BakemonWithBST>>);
-}
-
 
 /**
  * =============================
  *  PREGUNTA 6
  * =============================
  */
+
+type BakemonMoveByType = {
+  [key in Type]?: Move;
+};
+
+function getBestMoveByType(bakemonByType: BakemonByType): BakemonMoveByType {
+  const bestBakemonMoves: BakemonMoveByType = {};
+  Object.keys(bakemonByType).forEach((type) => {
+    const bakemon = bakemonByType[type as keyof BakemonByType];
+    if (bakemon) {
+      bakemon.moves.forEach((move) => {
+        if ((move.power ?? 0) > (bestBakemonMoves[bakemon.type]?.power ?? 0))
+          bestBakemonMoves[bakemon.type] = move;
+      });
+    }
+  });
+
+  return bestBakemonMoves;
+}
 
