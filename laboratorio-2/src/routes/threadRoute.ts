@@ -4,6 +4,10 @@ import Thread from "../models/Thread";
 
 const router = Router();
 
+router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../public/index.html"));
+});
+
 router.get("/data.json", async (req, res) => {
   try {
     const threads = await Thread.find({});
