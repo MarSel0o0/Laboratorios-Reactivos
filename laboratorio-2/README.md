@@ -83,7 +83,7 @@ sequenceDiagram
     Note over B,M: Listado de threads
     B->>S: GET /data.json (fetch)
     S->>M: Thread.find({})
-    M-->>S: Objeto IThread
+    M-->>S: Lista de objetos IThread
     S-->>B: 200 JSON con los threads
     B->>B: Renderiza los threads
 
@@ -91,7 +91,7 @@ sequenceDiagram
     B->>S: POST /new { author, content }
     S->>S: express.json() construye req.body
     S->>M: Thread.create({ author, content })
-    M-->>S: documento creado (_id, createdAt)
+    M-->>S: Objeto IThread creado
     S-->>B: 201 JSON con el thread creado
     B->>B: Agrega el thread de la respuesta a la lista
 ```
