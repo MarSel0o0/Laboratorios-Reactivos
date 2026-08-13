@@ -22,4 +22,29 @@ async function cargarThreads() {
   }
 }
 
+async function createThread(event) {
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  const response = await fetch("/new", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+    form.reset();
+    cargarThreads();
+  } else {
+    console.error("Error al crear el thread:", response.statusText);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", cargarThreads);
+document
+  .getElementById("new-thread-form")
+  .addEventListener("submit", createThread);
