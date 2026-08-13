@@ -17,7 +17,8 @@ mongoose
 // Registering Routes
 app.use("/", threadRoutes);
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`));
+app.listen(3000, () =>
+  console.log(`Server listening on http://localhost:3000`),
+);
 
 export default app;
