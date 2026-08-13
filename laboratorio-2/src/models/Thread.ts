@@ -8,7 +8,10 @@ export interface IThread {
 // la creación automática de la fecha con timestamps o default: Date.now.
 const threadSchema = new mongoose.Schema<IThread>({
     /* defina aqui sus campos */
-});
+    author: { type: String, required: true },
+    content: { type: String, required: true },
+    
+},{ timestamps: true });
 
 const Thread = mongoose.model<IThread>("Thread", threadSchema);
 export default Thread;
