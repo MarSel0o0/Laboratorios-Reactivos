@@ -15,3 +15,4 @@ const threadSchema = new mongoose.Schema<IThread>({
 
 const Thread = mongoose.model<IThread>("Thread", threadSchema);
 export default Thread;
+
