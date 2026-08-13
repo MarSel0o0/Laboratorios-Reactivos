@@ -17,4 +17,14 @@ router.get("/data.json", async (req, res) => {
   }
 });
 
+router.post("/new", async (req, res) => {
+  try {
+    const { author, content } = req.body;
+    const newThread = await Thread.create({ author, content });
+    return res.status(201).json(newThread);
+  } catch (error) {
+    res.status(500).json({ error: "Error al crear el hilo" });
+  }
+});
+
 export default router;
