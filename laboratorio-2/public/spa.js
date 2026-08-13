@@ -1,5 +1,13 @@
 /** Lógica para manejar la aplicación SPA */
 
+function crearItemThread(thread) {
+  const item = document.createElement("li");
+  const fecha = new Date(thread.createdAt).toLocaleString();
+  item.textContent = `${thread.author}: ${thread.content} (${fecha})`;
+  item.id = `thread-${thread._id}`;
+  return item;
+}
+
 async function cargarThreads() {
   const lista = document.getElementById("threads");
   const response = await fetch("/data.json");
@@ -8,17 +16,14 @@ async function cargarThreads() {
   lista.innerHTML = "";
   if (threads.length === 0) {
     const vacio = document.createElement("li");
+    vacio.id = "threads-vacio";
     vacio.textContent = "No hay threads todavía.";
     lista.appendChild(vacio);
     return;
   }
 
   for (const thread of threads) {
-    const item = document.createElement("li");
-    const fecha = new Date(thread.createdAt).toLocaleString();
-    item.textContent = `${thread.author}: ${thread.content} (${fecha})`;
-    item.id = `thread-${thread._id}`;
-    lista.appendChild(item);
+    lista.appendChild(crearItemThread(thread));
   }
 }
 
@@ -38,7 +43,11 @@ async function createThread(event) {
 
   if (response.ok) {
     form.reset();
-    cargarThreads();
+
+    const thread = await response.json();
+    const lista = document.getElementById("threads");
+    document.getElementById("threads-vacio")?.remove();
+    lista.appendChild(crearItemThread(thread));
   } else {
     console.error("Error al crear el thread:", response.statusText);
   }
