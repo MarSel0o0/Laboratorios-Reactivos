@@ -12,7 +12,7 @@ const threadSchema = new mongoose.Schema<IThread>(
     author: { type: String, required: true },
     content: { type: String, required: true },
     },
-    { timestamps: true },
+    { timestamps: true },2
 );
 
 const Thread = mongoose.model<IThread>("Thread", threadSchema);
