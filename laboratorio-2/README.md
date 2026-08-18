@@ -66,3 +66,26 @@ return res.status(201).json(thread);
 ## Diagrama secuencial
 
 Agregue aquí el diagrama de P6. Debe incluir las interacciones entre navegador, servidor y MongoDB para `GET /`, `GET /data.json` y `POST /new`.
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant Server
+    participant MongoDB
+
+    %% Primera parte: Carga Inicial de la página
+    Browser->>Server: GET http://localhost:3000/
+    Server-->>Browser: Documento HTML
+
+    %% Segunda parte: El JS solicita los threads existentes
+    Browser->>Server: GET http://localhost:3000/data.json
+    Server->>MongoDB: Consultar colección (Thread.find)
+    MongoDB-->>Server: Retorna el BSON de threads
+    Server-->>Browser: JSON con el listado de threads
+
+    %% Tercera parte: El usuario envía un nuevo thread
+    Browser->>Server: POST http://localhost:3000/new
+    Server->>MongoDB: Insertar en la BD (Thread.create)
+    MongoDB-->>Server: Confirmación y thread creado
+    Server-->>Browser: Status 201 Created (JSON del thread)
+```
