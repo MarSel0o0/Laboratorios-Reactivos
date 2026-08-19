@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Laboratorio 2 - Threads</title>
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Listado de threads</h1>
+
+    <!-- P5: formulario para crear un nuevo thread. No usa "action"/"method"
+         de HTML porque el envío se hace por AJAX (fetch) desde spa.js,
+         evitando que el navegador recargue la página. -->
+    <form id="new-thread-form">
+      <div>
+        <label for="author">Autor</label>
+        <input type="text" id="author" name="author" required />
+      </div>
+      <div>
+        <label for="content">Contenido</label>
+        <textarea id="content" name="content" required></textarea>
+      </div>
+      <button type="submit">Publicar</button>
+    </form>
+
+    <!-- P3: acá se inyectan los threads obtenidos vía GET /data.json -->
+    <ul id="threads" class="threads"></ul>
+  </div>
+
+  <script src="/spa.js"></script>
+</body>
+</html>

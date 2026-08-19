@@ -1,8 +1,30 @@
 .container {
   padding: 10px;
   border: 1px solid;
+  font-family: sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .threads {
   color: blue;
+  list-style: none;
+  padding: 0;
+}
+
+.threads li {
+  color: black;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0;
+}
+
+#new-thread-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+#new-thread-form textarea {
+  resize: vertical;
 }
