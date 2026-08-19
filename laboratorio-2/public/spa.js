@@ -91,6 +91,7 @@ let sendToServer = function (thread) {
 xhttpForPost.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 201) {
         // Eliminamos el thread que no tiene los campos createAt, etc. (campos que añade mongoose)
+        // Eliminamos el thread que no tiene los campos createAt, etc. (campos que añade mongoose).
         threads.pop();
         // Lo guardamos en nuestras variables locales
         threads.push(JSON.parse(this.responseText));
