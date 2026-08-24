@@ -1,4 +1,7 @@
-export type BakemonType = 
+export interface BakemonType {
+    type: string;
+    slot: number
+};
 
 export interface BakemonAbility {
     name: string;
@@ -34,5 +37,12 @@ export interface Bakemon {
     weight: number;
     moves: number[];
     stats: BakemonStat[];
-    types: { type: string; slot: number }[];
+    types: BakemonType[];
+}
+
+export function totalStats(bakemon: Bakemon) {
+    return bakemon.stats.reduce((acc, cur) => {
+        acc += cur.base_value;
+        return acc
+    }, 0)
 }
