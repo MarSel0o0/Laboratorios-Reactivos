@@ -139,3 +139,82 @@
 .move-card strong {
   color: #a8a8a8;
 }
+
+/* Team Builder Styles */
+.team-builder {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+
+.team-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.team-cell {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #555;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #242424;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .team-builder {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+  .team-cell {
+    border-color: #ccc;
+    background-color: #ffffff;
+  }
+}
+
+/* Button styles for team actions */
+.btn-add {
+  background-color: #4caf50; /* Green */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+  background-color: #45a049;
+}
+
+.btn-add:active {
+  background-color: #3d8b40; /* Darker green when pressed */
+}
+
+.btn-remove {
+  background-color: #f44336; /* Red */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-remove:hover {
+  background-color: #da190b;
+}
+
+.btn-remove:active {
+  background-color: #ba1409; /* Darker red when pressed */
+}

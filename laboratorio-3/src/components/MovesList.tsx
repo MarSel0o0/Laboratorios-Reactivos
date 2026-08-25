@@ -1,5 +1,5 @@
-import type { BakemonMove } from "./model/Bakemon.ts";
-import { firstLetterToUpperCase } from "./util/strings.ts";
+import type { BakemonMove } from "../model/Bakemon.ts";
+import { firstLetterToUpperCase } from "../util/strings.ts";
 
 interface MovesListProps {
     moves: BakemonMove[];

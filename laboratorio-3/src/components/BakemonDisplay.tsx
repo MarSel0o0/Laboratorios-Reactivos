@@ -1,7 +1,7 @@
-import type {Bakemon, BakemonAbility, BakemonMove, BakemonStat, BakemonType} from "./model/Bakemon.ts";
-import { totalStats } from "./model/Bakemon.ts";
-import { firstLetterToUpperCase } from "./util/strings.ts";
-import moves from "./data/moves.ts";
+import type {Bakemon, BakemonAbility, BakemonMove, BakemonStat, BakemonType} from "../model/Bakemon.ts";
+import { totalStats } from "../model/Bakemon.ts";
+import { firstLetterToUpperCase } from "../util/strings.ts";
+import moves from "../data/moves.ts";
 import MovesList from "./MovesList.tsx";
 import {useState} from "react";
 
@@ -59,7 +59,7 @@ function BakemonDisplay(props: Bakemon) {
                     return (
                         <>
                             <button  onClick={clickShowMoves}>
-                                {showMoves ? 'Ocultar Movimientos' : 'Expandir Movimientos'}
+                                {showMoves ? 'Hide Movements' : 'Show Movements'}
                             </button>
                             { showMoves && (<li key="moves">
                                 Moves
