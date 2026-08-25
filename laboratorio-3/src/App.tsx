@@ -1,42 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import bakemons from './data/bakemon.ts'
 import BakemonDisplay from "./BakemonDisplay.tsx";
+import type { Bakemon } from "./model/Bakemon.ts";
+import {useState, type ChangeEvent} from "react";
+import { firstLetterToUpperCase } from "./util/strings.ts";
 
 function App() {
-    debugger;
-    const [count, setCount] = useState(0);
+    const [selectedBakemon, setSelectedBake] = useState<number>(-1);
+
+    const bakemonSelector = (event: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedBake(Number(event.currentTarget.value));
+    }
+
+    const resolveBakemon = (bakemonID: number) => {
+        const foundBakemon = bakemons.find((bakemon) => bakemon.id === bakemonID) as Bakemon | undefined;
+        if (!foundBakemon) {
+            return <p>Please, select a Bakemon from the list.</p>;
+        }
+        return (
+            <BakemonDisplay id={foundBakemon.id} name={foundBakemon.name} height={foundBakemon.height} weight={foundBakemon.weight}
+                            moves={foundBakemon.moves} abilities={foundBakemon.abilities} stats={foundBakemon.stats} types={foundBakemon.types} />
+        );
+    }
+
     return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+      <h1>Bakedex</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-        { bakemons.map((bakemon) => {
-            return (
-                <BakemonDisplay key={bakemon.id} id={bakemon.id} name={bakemon.name} abilities={bakemon.abilities} height={bakemon.height} weight={bakemon.weight} moves={bakemon.moves} stats={bakemon.stats} types={bakemon.types} />
-            );
-        }) }
+          <label htmlFor={"bakemon-select"}> Choose a Bakemon: </label>
+          <select id={"bakemon-select"} name={"bakemon-select"} size={3} onChange={bakemonSelector}>
+              { bakemons.map((bake) => {
+                  return (
+                      <option value={bake.id}> {firstLetterToUpperCase(bake.name)} </option>
+                  );
+              }) }
+          </select>
+          <div className="bakemon-info">
+              { resolveBakemon(selectedBakemon) }
+          </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-    )
+    );
 }
 
 export default App

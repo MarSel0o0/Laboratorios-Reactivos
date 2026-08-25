@@ -35,8 +35,107 @@
 
 .card {
   padding: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card label {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.card select {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #1a1a1a;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.card select:hover, .card select:focus {
+  border-color: #646cff;
+}
+
+.card select option {
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.bakemon-info {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 600px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+@media (prefers-color-scheme: light) {
+  .bakemon-info {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card select {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+  }
+
+  .move-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+  }
+  .move-card strong {
+    color: #333;
+  }
+}
+
+.moves-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 0;
+}
+
+.move-card {
+  background-color: #242424;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #444;
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.move-card li {
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.move-card strong {
+  color: #a8a8a8;
 }

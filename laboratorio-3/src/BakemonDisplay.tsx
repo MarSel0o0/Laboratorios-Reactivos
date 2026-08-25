@@ -1,25 +1,41 @@
-import type { Bakemon, BakemonAbility, BakemonStat, BakemonType } from "./model/Bakemon.ts";
+import type {Bakemon, BakemonAbility, BakemonMove, BakemonStat, BakemonType} from "./model/Bakemon.ts";
 import { totalStats } from "./model/Bakemon.ts";
+import { firstLetterToUpperCase } from "./util/strings.ts";
+import moves from "./data/moves.ts";
+import MovesList from "./MovesList.tsx";
+import {useState} from "react";
 
 
 function BakemonDisplay(props: Bakemon) {
+
+    const [showMoves, setShowMoves] = useState<boolean>(false);
+
+    const matchMoves = (ids: number[]): BakemonMove[] => {
+        return ids.map((id: number): BakemonMove => {
+           return moves.find((move) => move.id === id)!;
+        });
+    }
 
     const listObject = <T extends object>(key: string, attrs: T[]) => {
         if (!attrs || attrs.length === 0) {
             return (<></>);
         }
         return (
-            <li key={key}> { key } <ul> { attrs.map((item, index) => {
+            <li key={key}> { firstLetterToUpperCase(key) } <ul> { attrs.map((item, index) => {
                 return (
                   <li key={index}>
                       { typeof item === 'object' && item !== null
-                          ? Object.entries(item).map(([k, v]) => `${k}: ${String(v)}`).join(', ')
+                          ? Object.entries(item).map(([k,v]) => `${firstLetterToUpperCase(k)} ${firstLetterToUpperCase(String(v))}`).join(' - ')
                           : String(item)
                       }
                   </li>
                 );
             }) } </ul> </li>
         )
+    }
+
+    const clickShowMoves = ()=> {
+        setShowMoves(!showMoves);
     }
 
     const iterateBakemon = (obj: Bakemon) => {
@@ -34,16 +50,30 @@ function BakemonDisplay(props: Bakemon) {
                     return (
                         <>
                             { listObject(key, value as BakemonStat[]) }
-                            <li key={"total-stats"}> { "Total: " } { totalStats(obj) } </li>
+                            <li key={"total-stats"}> { "BST: " } { totalStats(obj) } </li>
                         </>
                     );
                 }
-                case "moves":
+                case "moves": {
+                    const matched = matchMoves(value as number[]);
+                    return (
+                        <>
+                            <button  onClick={clickShowMoves}>
+                                {showMoves ? 'Ocultar Movimientos' : 'Expandir Movimientos'}
+                            </button>
+                            { showMoves && (<li key="moves">
+                                Moves
+                                <MovesList moves={matched}/>
+                            </li>) }
+                        </>
+
+                    );
+                }
                 case "id":
                     return (<></>);
                 default:
                     return (
-                        <li key={key}> { key + ": " } { value as string | number } </li>
+                        <li key={key}> { firstLetterToUpperCase(key) + ": " } { firstLetterToUpperCase(String(value)) } </li>
                     );
             }
         })
