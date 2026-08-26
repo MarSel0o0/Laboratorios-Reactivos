@@ -3,7 +3,18 @@
 // Recibe por props el contenido y el autor. Si el autor viene vacío, muestra
 // "Anónimo". Si el comentario responde a otro, recibe además el id del
 // respondido y lo muestra; si no responde a nadie, no muestra nada.
+
 //
+import type { Props } from '../types/props';
+// hago una destructuración solo del primer nivel de la firma, y luego solo utilizo lo que necesito
+// dentro del cuerpo de la función
+const PostBox = ({comment}: Props) => {
+    const {content, author, parent} = comment;
+    return (
+        <li>{content}, {author ?? "Anónimo"}, {parent && `Respuesta a ${parent}`}</li>
+    )
+}
+export default PostBox;
 // P3: agregue aquí una estructura clickeable para entrar a la vista detallada
 // del thread.
 //
