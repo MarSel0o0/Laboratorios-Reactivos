@@ -11,23 +11,28 @@
 //
 // Cada función debe declarar el tipo de sus argumentos y el de su retorno.
 //
-// import axios from 'axios'
-// import type { Post } from '../types/posts'
-//
-// const baseUrl = 'http://localhost:3001/threads'
+import axios from 'axios'
+import type { Post } from '../types/posts'
+
+const baseUrl = 'http://localhost:3001/threads'
 
 // P2: obtener el listado de threads.
-//
-// const getAll = () => { ... }
 
+const getAll = (): Promise<Post[]> => {
+    const request = axios.get(baseUrl);
+    return request.then(response => response.data);
+}
 // P2: crear un thread. El servidor solo necesita el contenido y, si lo hay,
 // el autor; del resto de los campos se encarga él.
 //
-// interface ThreadCreateData {
-//   content: string
-//   author?: string
-// }
-// const create = (data: ThreadCreateData) => { ... }
+interface ThreadCreateData {
+  content: string
+  author?: string
+}
+const create = (data: ThreadCreateData): Promise<Post> => {
+    const request = axios.post(baseUrl, data);
+    return request.then(response => response.data);
+}
 
 // P3: obtener un thread junto a sus comentarios.
 //
@@ -53,10 +58,10 @@
 //
 // const update = (id: number, newObject: Post) => { ... }
 
-// export default {
-//   getAll,
-//   create,
+export default {
+  getAll,
+  create,
 //   getThread,
 //   createComment,
 //   update,
-// }
+}
