@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { BakemonList } from "./components/bakemon-list";
+import { TeamBuilder, TEAM_SIZE } from "./components/team-builder";
+import bakemonData from "./data/bakemon";
+import type { Bakemon } from "./types";
+import "./App.css";
+
+const bakemons = bakemonData as Bakemon[];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [team, setTeam] = useState<Bakemon[]>([]);
+
+  const addToTeam = (bakemon: Bakemon) => {
+    setTeam((currentTeam) => {
+      const alreadyInTeam = currentTeam.some(
+        (member) => member.id === bakemon.id,
+      );
+      if (alreadyInTeam || currentTeam.length >= TEAM_SIZE) return currentTeam;
+      return [...currentTeam, bakemon];
+    });
+  };
+
+  const removeFromTeam = (id: number) => {
+    setTeam((currentTeam) => currentTeam.filter((member) => member.id !== id));
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <body>
+      <TeamBuilder team={team} onRemove={removeFromTeam} />
+      <BakemonList
+        bakemons={bakemons}
+        team={team}
+        onAddToTeam={addToTeam}
+        onRemoveFromTeam={removeFromTeam}
+      ></BakemonList>
+    </body>
+  );
 }
 
-export default App
+export default App;
