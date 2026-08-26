@@ -23,28 +23,30 @@ Codigo principal de tipos y funciones:
 
 ```ts
 export interface Bakemon {
-	id: number
-	name: string
-	abilities: Ability[]
-	height: number
-	weight: number
-	moves: number[]
-	stats: Stat[]
-	types: Type[]
+  id: number;
+  name: string;
+  abilities: Ability[];
+  height: number;
+  weight: number;
+  moves: number[];
+  stats: Stat[];
+  types: Type[];
 }
 
 export function getBaseStatTotal(bakemon: Bakemon): number {
-	return bakemon.stats.reduce((total, stat) => total + stat.base_value, 0)
+  return bakemon.stats.reduce((total, stat) => total + stat.base_value, 0);
 }
 
 export function getMovesForBakemon(bakemon: Bakemon): BakemonMove[] {
-	return bakemon.moves
-		.map((moveId) => moves.find((move) => move.id === moveId))
-		.filter((move): move is BakemonMove => move !== undefined)
+  return bakemon.moves
+    .map((moveId) => moves.find((move) => move.id === moveId))
+    .filter((move): move is BakemonMove => move !== undefined);
 }
 ```
 
 ## P1 - Conceptos de React
+
+**Archivo de la respuesta:** `src/App.tsx` (`formatName`, `BakemonDisplay`, `MovesList` y los estados de `App`).
 
 ### a) Componentes
 
@@ -56,11 +58,11 @@ Codigo del componente y de la funcion auxiliar mencionados:
 
 ```tsx
 function formatName(name: string): string {
-	return name.replaceAll('-', ' ')
+  return name.replaceAll("-", " ");
 }
 
 function BakemonDisplay({ bakemon }: { bakemon: Bakemon }) {
-	return <h2>{formatName(bakemon.name)}</h2>
+  return <h2>{formatName(bakemon.name)}</h2>;
 }
 ```
 
@@ -75,10 +77,16 @@ Ejemplo de props y estado usados en la aplicacion:
 
 ```tsx
 function MovesList({ moves }: { moves: BakemonMove[] }) {
-	return <div>{moves.map((move) => <p key={move.id}>{move.name}</p>)}</div>
+  return (
+    <div>
+      {moves.map((move) => (
+        <p key={move.id}>{move.name}</p>
+      ))}
+    </div>
+  );
 }
 
-const [movesExpanded, setMovesExpanded] = useState(false)
+const [movesExpanded, setMovesExpanded] = useState(false);
 ```
 
 ### c) JSX frente a HTML
@@ -92,10 +100,14 @@ JSX es una sintaxis de JavaScript/TypeScript que se transforma en llamadas a Rea
 `className` representa la propiedad `class` del elemento React. Las llaves permiten evaluar expresiones TypeScript, como leer una propiedad, hacer una conversion o mostrar contenido condicional:
 
 ```tsx
-{movesExpanded ? <MovesList moves={moves} /> : null}
+{
+  movesExpanded ? <MovesList moves={moves} /> : null;
+}
 ```
 
 ## P2 - `BakemonDisplay`
+
+**Archivo de la respuesta:** `src/App.tsx` (`BakemonDisplay`) y `src/data/lab3.ts` (`getBaseStatTotal`).
 
 `BakemonDisplay` recibe `{ bakemon }` como prop y muestra:
 
@@ -134,6 +146,8 @@ Codigo de `BakemonDisplay` para tipos, habilidades y estadisticas:
 
 ## P3 - `MovesList`
 
+**Archivo de la respuesta:** `src/App.tsx` (`MovesList` y `BakemonDisplay`) y `src/data/lab3.ts` (`getMovesForBakemon`). Los datos se encuentran en `src/data/bakemon.ts` y `src/data/moves.ts`.
+
 `MovesList` recibe una lista de movimientos completos. Antes de renderizarla, `BakemonDisplay` llama a `getMovesForBakemon`: cada id guardado en el Bakemon se busca en el arreglo `moves` mediante `find`.
 
 De cada movimiento se muestran el nombre, el tipo, la potencia o el texto `Sin potencia`, y `effect_entry` como descripcion. El `id` del movimiento funciona como `key`.
@@ -142,25 +156,29 @@ Codigo de `MovesList`:
 
 ```tsx
 function MovesList({ moves }: { moves: BakemonMove[] }) {
-	return <div className="moves-list">
-		{moves.map((move) => (
-			<article key={move.id}>
-				<strong>{formatName(move.name)}</strong>
-				<span>{move.type}</span>
-				<span>{move.power === null ? 'Sin potencia' : move.power}</span>
-				<p>{move.effect_entry}</p>
-			</article>
-		))}
-	</div>
+  return (
+    <div className="moves-list">
+      {moves.map((move) => (
+        <article key={move.id}>
+          <strong>{formatName(move.name)}</strong>
+          <span>{move.type}</span>
+          <span>{move.power === null ? "Sin potencia" : move.power}</span>
+          <p>{move.effect_entry}</p>
+        </article>
+      ))}
+    </div>
+  );
 }
 ```
 
 ## P4 - Expandir movimientos
 
+**Archivo de la respuesta:** `src/App.tsx` (`BakemonDisplay`, estado `movesExpanded`).
+
 `BakemonDisplay` declara el estado local:
 
 ```tsx
-const [movesExpanded, setMovesExpanded] = useState(false)
+const [movesExpanded, setMovesExpanded] = useState(false);
 ```
 
 El boton invierte ese booleano. La expresion condicional solo monta `MovesList` cuando el estado vale `true`; al pulsar de nuevo, la lista se oculta.
@@ -168,21 +186,22 @@ El boton invierte ese booleano. La expresion condicional solo monta `MovesList` 
 Codigo del boton y del renderizado condicional:
 
 ```tsx
-<button
-	type="button"
-	onClick={() => setMovesExpanded((expanded) => !expanded)}
->
-	{movesExpanded ? 'Ocultar movimientos' : 'Expandir movimientos'}
-</button>
-{movesExpanded ? <MovesList moves={resolvedMoves} /> : null}
+<button type="button" onClick={() => setMovesExpanded((expanded) => !expanded)}>
+  {movesExpanded ? "Ocultar movimientos" : "Expandir movimientos"}
+</button>;
+{
+  movesExpanded ? <MovesList moves={resolvedMoves} /> : null;
+}
 ```
 
 ## P5 - Lista y detalle
 
+**Archivo de la respuesta:** `src/App.tsx` (estado `selectedId`, búsqueda de `selected` y renderizado de la lista y el detalle).
+
 `App` guarda el id del Bakemon seleccionado:
 
 ```tsx
-const [selectedId, setSelectedId] = useState<number | null>(null)
+const [selectedId, setSelectedId] = useState<number | null>(null);
 ```
 
 La lista actualiza ese estado al hacer click. `App` busca el objeto correspondiente y pasa el resultado a `BakemonDisplay`. El boton de volver vuelve a poner el estado en `null`, por lo que se muestra otra vez el catalogo.
@@ -210,6 +229,8 @@ const selected = bakemons.find((bakemon) => bakemon.id === selectedId)
 
 ## P6 - Constructor de equipos
 
+**Archivo de la respuesta:** `src/App.tsx` (`team`, `toggleTeam` y los botones `Agregar`/`Quitar`).
+
 El equipo se representa como `number[]`, guardando ids y no copias completas de los objetos. `toggleTeam` usa el actualizador funcional de `setTeam` y crea arreglos nuevos con `filter` o spread:
 
 - Si el id ya existe, `filter` lo quita.
@@ -218,6 +239,36 @@ El equipo se representa como `number[]`, guardando ids y no copias completas de 
 - `includes` impide agregar el mismo Bakemon dos veces.
 
 La cuadricula siempre crea seis celdas. Cada celda busca su miembro por id y muestra `Espacio libre` cuando no hay uno asignado.
+
+Codigo del estado y del actualizador del equipo:
+
+```tsx
+const [team, setTeam] = useState<number[]>([]);
+
+function toggleTeam(bakemon: Bakemon) {
+  setTeam((currentTeam) =>
+    currentTeam.includes(bakemon.id)
+      ? currentTeam.filter((id) => id !== bakemon.id)
+      : currentTeam.length < 6
+        ? [...currentTeam, bakemon.id]
+        : currentTeam,
+  );
+}
+```
+
+Codigo de los botones de agregar o quitar:
+
+```tsx
+const inTeam = team.includes(bakemon.id)
+
+<button
+  type="button"
+  onClick={() => toggleTeam(bakemon)}
+  disabled={!inTeam && team.length === 6}
+>
+  {inTeam ? 'Quitar' : 'Agregar'}
+</button>
+```
 
 ## Tests por pregunta
 
@@ -276,31 +327,3 @@ Resultado esperado: vuelve a aparecer la lista y el detalle deja de mostrarse. L
 5. Pulsar `Quitar` y verificar que la celda queda libre y se puede agregar otro Bakemon.
 
 Resultado esperado: el equipo nunca supera seis integrantes, no contiene ids repetidos y se actualiza sin mutar directamente el arreglo anterior.
-
-Codigo del estado y del actualizador del equipo:
-
-```tsx
-const [team, setTeam] = useState<number[]>([])
-
-function toggleTeam(bakemon: Bakemon) {
-	setTeam((currentTeam) => currentTeam.includes(bakemon.id)
-		? currentTeam.filter((id) => id !== bakemon.id)
-		: currentTeam.length < 6
-			? [...currentTeam, bakemon.id]
-			: currentTeam)
-}
-```
-
-Codigo de los botones de agregar o quitar:
-
-```tsx
-const inTeam = team.includes(bakemon.id)
-
-<button
-	type="button"
-	onClick={() => toggleTeam(bakemon)}
-	disabled={!inTeam && team.length === 6}
->
-	{inTeam ? 'Quitar' : 'Agregar'}
-</button>
-```
