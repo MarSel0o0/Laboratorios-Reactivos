@@ -5,19 +5,26 @@
 // respondido y lo muestra; si no responde a nadie, no muestra nada.
 
 //
+import { Link } from 'react-router-dom';
 import type { Props } from '../types/props';
 // hago una destructuración solo del primer nivel de la firma, y luego solo utilizo lo que necesito
 // dentro del cuerpo de la función
 const PostBox = ({comment}: Props) => {
-    const {content, author, parent} = comment;
-    return (
+    const {content, author, parent, thread, id} = comment;
+
+    const postContent = (
         <li>{content}, {author ?? "Anónimo"}, {parent && `Respuesta a ${parent}`}</li>
-    )
+    );
+    return thread === null ? (
+        <Link to ={`/thread/${id}`}>{postContent}</Link>
+    ) : (
+        postContent
+    );
 }
 export default PostBox;
 // P3: agregue aquí una estructura clickeable para entrar a la vista detallada
 // del thread.
-//
+
 // P5: muestre la cantidad de likes y dislikes, con un botón para cada uno. El
 // número debe cambiar sin recargar la página, así que conviene guardarlo en el
 // estado del componente además de mandarlo al servidor.
