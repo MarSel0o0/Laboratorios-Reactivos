@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom'
 import type { Post } from '../types/posts'
 import threadsService from '../services/threads'
 import PostBox from '../components/PostBox'
+import PostForm from '../components/PostForm'
 
 const Thread = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,16 +23,24 @@ const Thread = () => {
         });
     }, [id]);
 
+    const handleCreateComment = (data: {content: string, author?: string, parent?: number}) => {
+        if (!id) return;
+        threadsService.createComment(data, +id ).then((newComment) =>{
+            setComments([...comments, newComment])
+        })
+    };
+
     if (!thread) {
         return <div>Cargando...</div>
     }
 
     return (
         <div>
+            <PostForm onSubmit ={handleCreateComment}/>
             <PostBox comment={thread} />
             <ul>
                 {comments.map((comment) => (
-                    <PostBox key={comment.id} comment={comment} />
+                    <PostBox key={comment.id} comment={comment} onReply ={handleCreateComment}/>
                 ))}
             </ul>
         </div>
@@ -40,14 +49,5 @@ const Thread = () => {
     
     
     }
-// P4: agregue el formulario al principio, que aquí crea un comentario, y el
-// formulario desplegable de respuesta debajo de cada comentario.
-//
-// import { useEffect, useState } from 'react'
-// import { useParams } from 'react-router-dom'
-// import type { Post } from '../types/posts'
-// import threadsService from '../services/threads'
-//
-// const Thread = () => { ... }
-//
+
 export default Thread

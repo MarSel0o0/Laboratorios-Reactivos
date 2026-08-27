@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import type { Post } from '../types/posts'
 import threadsService from '../services/threads'
 import PostBox from '../components/PostBox'
+import PostForm from '../components/PostForm'
 
 const Threads = () => {
     const [threads, setThreads] = useState<Post[]>([]);
@@ -16,8 +17,15 @@ const Threads = () => {
             setThreads(data);
         })
     }, []);
+    const handleCreate = (data: {content: string, author?: string}) => {
+        threadsService.create(data).then((newThread) =>{
+            setThreads([...threads, newThread]);
+
+        });
+    };
     return (
         <div>
+            <PostForm onSubmit={handleCreate} />
             <ul>
                 {threads.map((thread) => (
                     <PostBox key={thread.id} comment={thread} />
@@ -28,12 +36,4 @@ const Threads = () => {
 }
 
 
-// P4: agregue el formulario al principio de la página. Aquí crea un thread.
-//
-// import { useEffect, useState } from 'react'
-// import type { Post } from '../types/posts'
-// import threadsService from '../services/threads'
-//
-// const Threads = () => { ... }
-//
 export default Threads
