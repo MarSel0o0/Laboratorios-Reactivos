@@ -36,21 +36,31 @@ const create = (data: ThreadCreateData): Promise<Post> => {
 
 // P3: obtener un thread junto a sus comentarios.
 //
-// interface ThreadAnswer {
-//   thread: Post
-//   comments: Post[]
-// }
-// const getThread = (id: string) => { ... }
+interface ThreadAnswer {
+  thread: Post
+  comments: Post[]
+}
+const getThread = (id: string): Promise<ThreadAnswer> => {
+  const url = `${baseUrl}/${id}`;
+  const request = axios.get(url);
+  return request.then(response => response.data); 
+
+ }
 
 // P3: crear un comentario dentro de un thread. `parent` es el id del
 // comentario al que responde, y debe pertenecer al mismo thread.
 //
-// interface CommentCreateData {
-//   content: string
-//   author?: string
-//   parent?: number
-// }
-// const createComment = (data: CommentCreateData, threadId: number) => { ... }
+interface CommentCreateData {
+  content: string
+  author?: string
+  parent?: number
+}
+const createComment = (data: CommentCreateData, threadId: number): Promise<Post> => { 
+  const url = `${baseUrl}/${threadId}`;
+  const request = axios.post(url, data);
+  return request.then(response => response.data)
+
+}
 
 // P5: actualizar un thread o comentario. Ojo con la ruta: es /posts/:id, no
 // /threads/:id. El endpoint sobrescribe el objeto, así que hay que mandar una
@@ -61,7 +71,7 @@ const create = (data: ThreadCreateData): Promise<Post> => {
 export default {
   getAll,
   create,
-//   getThread,
-//   createComment,
-//   update,
+  getThread,
+  createComment,
+  // update,
 }
