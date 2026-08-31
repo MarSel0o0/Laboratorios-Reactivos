@@ -48,13 +48,16 @@ const createComment = (data: CommentCreateData, threadId: number): Promise<Post>
 // P5: actualizar un thread o comentario. Ojo con la ruta: es /posts/:id, no
 // /threads/:id. El endpoint sobrescribe el objeto, así que hay que mandar una
 // copia completa con el campo ya modificado.
-//
-// const update = (id: number, newObject: Post) => { ... }
+
+const update = (id: number, newObject: Post): Promise<Post> => {
+  const putUrl: string = baseUrl.split('/').slice(0, -1).join('/') + `/posts/${id}`
+  return axios.put(`${putUrl}`, newObject).then(res => res.data)
+}
 
 export default {
   getAll,
   create,
   getThread,
   createComment,
-  // update,
+  update,
 }
