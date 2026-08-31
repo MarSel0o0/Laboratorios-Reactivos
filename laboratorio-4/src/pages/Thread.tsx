@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom'
 import type { Post } from '../types/posts'
 import threadsService from '../services/threads'
 import PostForm from '../components/PostForm.tsx'
-import CommentTree from '../components/CommentTree.tsx'
+import PostBox from '../components/PostBox.tsx'
 
 const Thread = () => {
   const [thread, setThread] = useState<Post>({} as Post)
@@ -53,11 +53,9 @@ const Thread = () => {
             Comentarios
           </h2>
           { comments && comments.length > 0
-            ? comments
-                .filter(c => c.parent === null) // Primero renderizamos solo los comentarios raíz (los que responden directo al thread)
-                .map((comment: Post) => (
-                  <CommentTree key={comment.id} comment={comment} allComments={comments} onReply={addComment} />
-                ))
+            ? comments.map((comment: Post) => (
+                <PostBox key={comment.id} post={comment} onReply={addComment} />
+              ))
             : 'No comments yet.'}
         </div>
       </div>
