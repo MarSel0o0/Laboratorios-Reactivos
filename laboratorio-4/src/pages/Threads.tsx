@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import type { Post } from '../types/posts'
 import threadsService from '../services/threads'
 import PostBox from '../components/PostBox.tsx'
-import PostForm from "../components/PostForm.tsx";
+import PostForm from '../components/PostForm.tsx'
 
 const Threads = () => {
   const [threads, setThreads] = useState<Post[]>([])
