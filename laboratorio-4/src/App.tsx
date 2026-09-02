@@ -1,4 +1,6 @@
+import { BrowserRouter, Route,Routes } from "react-router-dom";
 import Threads from "./pages/Threads";
+import Thread from "./pages/Thread";
 
 function App() {
   // P2: reemplace este contenido por la página principal, con el listado de
@@ -14,7 +16,12 @@ function App() {
   //     </Routes>
   //   </BrowserRouter>
   return (
-    <Threads />
+    <BrowserRouter>
+       <Routes>
+         <Route path="/" element={<Threads />} />
+         <Route path="/:id" element={<Thread />} />
+       </Routes>
+    </BrowserRouter>
   );
 }
 
