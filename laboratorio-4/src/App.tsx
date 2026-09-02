@@ -1,3 +1,5 @@
+import PostBox from "./components/PostBox";
+
 function App() {
   // P2: reemplace este contenido por la página principal, con el listado de
   // threads.
@@ -13,16 +15,9 @@ function App() {
   //   </BrowserRouter>
   return (
     <div>
-      <h1>Pila Completa</h1>
-      <p>
-        Todavía no hay nada que mostrar. Empiece por el componente de
-        publicaciones en
-        {' '}
-        <code>src/components/PostBox.tsx</code>
-        .
-      </p>
+      <PostBox author="Seba" content="Hola como estas" parent={1} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
