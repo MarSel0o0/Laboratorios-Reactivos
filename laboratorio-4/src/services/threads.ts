@@ -11,23 +11,22 @@
 //
 // Cada función debe declarar el tipo de sus argumentos y el de su retorno.
 //
-// import axios from 'axios'
-// import type { Post } from '../types/posts'
-//
-// const baseUrl = 'http://localhost:3001/threads'
+import axios from 'axios'
+import type { Post } from '../types/posts'
 
-// P2: obtener el listado de threads.
-//
-// const getAll = () => { ... }
+const baseUrl = 'https://fullstack.dcc.uchile.cl:3000/threads'
 
-// P2: crear un thread. El servidor solo necesita el contenido y, si lo hay,
-// el autor; del resto de los campos se encarga él.
-//
-// interface ThreadCreateData {
-//   content: string
-//   author?: string
-// }
-// const create = (data: ThreadCreateData) => { ... }
+const getAll = (): Promise<Post[]> => {
+  return axios.get<Post[]>(baseUrl).then(res => res.data)
+}
+
+interface ThreadCreateData {
+  content: string
+  author?: string
+}
+const create = (data: ThreadCreateData): Promise<Post> => {
+  return axios.post<Post>(baseUrl, data).then(res => res.data)
+}
 
 // P3: obtener un thread junto a sus comentarios.
 //
@@ -53,10 +52,10 @@
 //
 // const update = (id: number, newObject: Post) => { ... }
 
-// export default {
-//   getAll,
-//   create,
-//   getThread,
-//   createComment,
-//   update,
-// }
+export default {
+  getAll,
+  create,
+  // getThread,
+  // createComment,
+  // update,
+}

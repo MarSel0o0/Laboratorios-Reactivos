@@ -1,4 +1,4 @@
-import PostBox from "./components/PostBox";
+import Threads from "./pages/Threads";
 
 function App() {
   // P2: reemplace este contenido por la página principal, con el listado de
@@ -14,9 +14,7 @@ function App() {
   //     </Routes>
   //   </BrowserRouter>
   return (
-    <div>
-      <PostBox author="Seba" content="Hola como estas" parent={1} />
-    </div>
+    <Threads />
   );
 }
 
