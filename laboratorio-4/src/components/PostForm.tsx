@@ -8,11 +8,34 @@
 // El mismo componente sirve para el formulario desplegable de respuesta, que
 // además manda el id del comentario al que responde.
 //
-// interface PostFormProps {
-//   onSubmit: (data: { content: string, author?: string, parent?: number }) => void
-//   ...
-// }
-//
-// const PostForm = ({ ... }: PostFormProps) => { ... }
-//
-// export default PostForm
+import { type SubmitEvent } from 'react'
+
+interface PostFormProps {
+  onSubmit: (data: { content: string, author?: string, parent?: number }) => void
+  parentId?: number
+}
+
+const PostForm = ({ onSubmit, parentId }: PostFormProps) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event?.currentTarget)
+    const content = formData.get('content') as string
+    const author = formData.get('author') as string
+
+    event.currentTarget.reset()
+    onSubmit({
+      content,
+      author: author ? author : undefined,
+      parent: parentId,
+    })
+  }
+  return (
+    <form onSubmit={handleSubmit} className="post-form">
+      <input name="author" placeholder="Autor (opcional)" />
+      <textarea name="content" placeholder="Escribe aquí..." required />
+      <button type="submit">Enviar</button>
+    </form>
+  )
+}
+
+export default PostForm

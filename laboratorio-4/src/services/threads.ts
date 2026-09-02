@@ -11,41 +11,39 @@
 //
 // Cada función debe declarar el tipo de sus argumentos y el de su retorno.
 //
-// import axios from 'axios'
-// import type { Post } from '../types/posts'
-//
-// const baseUrl = 'http://localhost:3001/threads'
+import axios from 'axios'
+import type { Post } from '../types/posts'
 
-// P2: obtener el listado de threads.
-//
-// const getAll = () => { ... }
+const baseUrl = 'http://localhost:3001/threads'
 
-// P2: crear un thread. El servidor solo necesita el contenido y, si lo hay,
-// el autor; del resto de los campos se encarga él.
-//
-// interface ThreadCreateData {
-//   content: string
-//   author?: string
-// }
-// const create = (data: ThreadCreateData) => { ... }
+const getAll = (): Promise<Post[]> => {
+  return axios.get<Post[]>(baseUrl).then(res => res.data)
+}
 
-// P3: obtener un thread junto a sus comentarios.
-//
-// interface ThreadAnswer {
-//   thread: Post
-//   comments: Post[]
-// }
-// const getThread = (id: string) => { ... }
+interface ThreadCreateData {
+  content: string
+  author?: string
+}
+const create = (data: ThreadCreateData): Promise<Post> => {
+  return axios.post<Post>(baseUrl, data).then(res => res.data)
+}
 
-// P3: crear un comentario dentro de un thread. `parent` es el id del
-// comentario al que responde, y debe pertenecer al mismo thread.
-//
-// interface CommentCreateData {
-//   content: string
-//   author?: string
-//   parent?: number
-// }
-// const createComment = (data: CommentCreateData, threadId: number) => { ... }
+interface ThreadAnswer {
+  thread: Post
+  comments: Post[]
+}
+const getThread = (id: string): Promise<ThreadAnswer> => {
+  return axios.get<ThreadAnswer>(baseUrl + `/${id}`).then(res => res.data)
+}
+
+interface CommentCreateData {
+  content: string
+  author?: string
+  parent?: number
+}
+const createComment = (data: CommentCreateData, threadId: number): Promise<Post> => {
+  return axios.post<Post>(`${baseUrl}/${threadId}`, data).then(res => res.data)
+}
 
 // P5: actualizar un thread o comentario. Ojo con la ruta: es /posts/:id, no
 // /threads/:id. El endpoint sobrescribe el objeto, así que hay que mandar una
@@ -53,10 +51,10 @@
 //
 // const update = (id: number, newObject: Post) => { ... }
 
-// export default {
-//   getAll,
-//   create,
-//   getThread,
-//   createComment,
-//   update,
-// }
+export default {
+  getAll,
+  create,
+  getThread,
+  createComment,
+  // update,
+}
