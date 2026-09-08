@@ -7,8 +7,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 require("./db");
+const threads_1 = __importDefault(require("./routes/threads"));
+const thread_1 = __importDefault(require("./routes/thread"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+app.use("/api/threads", threads_1.default);
+app.use("/api/thread", thread_1.default);
 app.get("/", (_request, response) => {
     response.send("<h1>Backend Laboratorio 5</h1>");
 });
