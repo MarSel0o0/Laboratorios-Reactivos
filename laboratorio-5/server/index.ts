@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import { postBoxSchema } from './components/postBox'
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -9,18 +10,21 @@ const port = process.env.PORT || 3001
 app.use(cors())
 app.use(express.json())
 
-const postSchema = new mongoose.Schema({
-  content: { type: String, required: true },
-  author: { type: String, default: null },
-  thread: { type: Number, default: null },
-  parent: { type: Number, default: null },
-  likes: { type: Number, default: 0 },
-  dislikes: { type: Number, default: 0 },
-}, {
-  timestamps: true,
-})
 
-const Post = mongoose.model('Post', postSchema)
+const Post = mongoose.model('Post', postBoxSchema)
+
+postBoxSchema.set("toJSON", { 
+transform: ( 
+document, 
+returnedObject: { 
+            id?: string | undefined; 
+            _id?: mongoose.Types.ObjectId; 
+            __v?: number;
+        }, 
+    ) =>{returnedObject.id = returnedObject._id?.toString(); 
+delete returnedObject._id; 
+delete returnedObject.__v; },
+});
 
 app.get('/threads', async (_request, response) => {
   const threads = await Post.find({ thread: null }).sort({ createdAt: 1 })
