@@ -26,12 +26,12 @@ delete returnedObject._id;
 delete returnedObject.__v; },
 });
 
-app.get('/threads', async (_request, response) => {
+app.get('/api/threads', async (_request, response) => {
   const threads = await Post.find({ thread: null }).sort({ createdAt: 1 })
   response.json(threads)
 })
 
-app.post('/threads', async (request, response) => {
+app.post('/api/threads', async (request, response) => {
   const post = await Post.create({
     content: request.body.content,
     author: request.body.author,

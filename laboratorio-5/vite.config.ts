@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/threads': 'http://localhost:3001',
-      '/posts': 'http://localhost:3001',
+      '/api/threads': 'http://localhost:3001',
+      '/api/posts': 'http://localhost:3001',
     },
   },
 })
