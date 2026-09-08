@@ -3,9 +3,9 @@ import { brown } from '@mui/material/colors'
 import { useState } from 'react'
 
 interface PostFormProps {
-  onSubmit: (data: { content: string, author?: string, parent?: number }) => void
+  onSubmit: (data: { content: string, author?: string, parent?: string }) => void
   onCancel?: () => void
-  parentId?: number
+  parentId?: string
 }
 
 function PostForm({ parentId, onSubmit, onCancel }: PostFormProps) {

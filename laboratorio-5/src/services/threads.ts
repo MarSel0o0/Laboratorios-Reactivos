@@ -1,7 +1,8 @@
 import axios from 'axios'
 import type { Post } from '../types/posts'
 
-const baseUrl = `/threads`
+const baseUrl = `/api/threads`
+const threadUrl = `/api/thread`
 
 const getAll = () => {
   const request = axios.get<Post[]>(`${baseUrl}/`)
@@ -13,7 +14,7 @@ interface ThreadAnswer {
   comments: Post[]
 }
 const getThread = (id: string) => {
-  const request = axios.get<ThreadAnswer>(`${baseUrl}/${id}`)
+  const request = axios.get<ThreadAnswer>(`${threadUrl}/${id}`)
   return request.then(response => response.data)
 }
 
@@ -28,15 +29,15 @@ const create = (data: ThreadCreateData) => {
 interface CommentCreateData {
   content: string
   author?: string
-  parent?: number
+  parent?: string
 }
-const createComment = (data: CommentCreateData, threadId: number) => {
-  return axios.post<Post>(`${baseUrl}/${threadId}`, data).then(request => request.data)
+const createComment = (data: CommentCreateData, threadId: string) => {
+  return axios.post<Post>(`${threadUrl}/${threadId}`, data).then(request => request.data)
 }
 
-const update = (id: number, newObject: Post) => {
+const update = (id: string, newObject: Post) => {
   return axios
-    .put<Post>(`/posts/${id}`, newObject)
+    .put<Post>(`/api/posts/${id}`, newObject)
     .then(request => request.data)
 }
 

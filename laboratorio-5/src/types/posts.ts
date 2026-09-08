@@ -1,9 +1,9 @@
 export interface Post {
-  id: number
+  id: string
   content: string
   author: string | null
-  thread: number | null // null si es thread, un id si es comentario
-  parent: number | null // null si no responde a nadie o el id del respondido
+  thread: string | null // null si es thread, un id si es comentario
+  parent: string | null // null si no responde a nadie o el id del respondido
   createdAt: string
   updatedAt: string
   likes: number

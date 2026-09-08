@@ -9,7 +9,7 @@ interface PostBoxProps {
   post: Post
   action: 'forward' | 'reply'
   setToast: (toast: { message: string, severity: 'success' | 'error' } | null) => void
-  onReply?: (postId: number) => void
+  onReply?: (postId: string) => void
 }
 
 // Helper function to format the date

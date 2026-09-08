@@ -12,24 +12,26 @@ interface ThreadProps {
 
 function Thread({ setToast }: ThreadProps) {
   const { id } = useParams()
+  if (!id) {
+    return null 
+  }
   const [comments, setComments] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
-  const [replyToPostId, setReplyToPostId] = useState<number | null>(null)
+  const [replyToPostId, setReplyToPostId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (id) {
       threads.getThread(id)
         .then(thread => setComments([thread.thread, ...thread.comments]))
         .then(() => setLoading(false))
     }
-  }, [])
+  , [])
 
-  const handleReplyClick = (postId: number) => {
+  const handleReplyClick = (postId: string) => {
     setReplyToPostId(replyToPostId === postId ? null : postId)
   }
 
-  const handleReplySubmit = (data: { content: string, parent?: number, author?: string }) => {
-    return threads.createComment(data, Number(id))
+  const handleReplySubmit = (data: { content: string, parent?: string, author?: string }) => {
+    return threads.createComment(data, id)
       .then((comment) => {
         setComments(comments.concat(comment))
         setReplyToPostId(null)
@@ -50,7 +52,7 @@ function Thread({ setToast }: ThreadProps) {
       </Typography>
       <Box mb={4}>
         <PostForm onSubmit={data =>
-          threads.createComment(data, Number(id))
+          threads.createComment(data, (id))
             .then(comment => setComments(comments.concat(comment)))
             .then(() => setToast({ message: 'Comentario creado exitosamente', severity: 'success' }))
             .catch((error: Error) => setToast({ message: `Error al crear el comentario: ${error.message}`, severity: 'error' }))}
