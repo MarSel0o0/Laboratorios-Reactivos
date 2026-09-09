@@ -11,11 +11,6 @@ const forbiddenNames = ["Huevito Rey", "Matias Toro", "Memes es mal Ramo"];
 
 const postSchema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     content: {
       type: String,
       minLength: 1,
@@ -24,6 +19,7 @@ const postSchema = new mongoose.Schema(
     },
     author: {
       type: String,
+      default: "Anon",
       validate: {
         validator: (value: string) =>
           !forbiddenNames.some((name) => value === name),
@@ -34,26 +30,21 @@ const postSchema = new mongoose.Schema(
     parent: Number,
     likes: {
       type: Number,
-      required: true,
+      required: false,
     },
     dislikes: {
       type: Number,
-      required: true,
+      required: false,
     },
   },
   { timestamps: true },
 );
 
+
 postSchema.set("toJSON", {
-  transform: (
-    document,
-    returnedObject: {
-      _id?: mongoose.Types.ObjectId;
-      __v?: number;
-    },
-  ) => {
-    delete returnedObject._id;
-    delete returnedObject.__v;
+  transform: (document, returnedObject) => {
+    const { _id, __v, ...rest } = returnedObject;
+    return { ...rest, id: _id.toString() };
   },
 });
 
