@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { Post } from '../models/post.ts';
+import {validateThreadCreation} from "../middlware/validators.ts";
 
 const threadsRouter = Router();
 
@@ -14,7 +15,7 @@ threadsRouter.get("/", async (request, response, next) => {
   }
 });
 
-threadsRouter.post("/", async (request, response, next) => {
+threadsRouter.post("/", validateThreadCreation, async (request, response, next) => {
     try {
         const { content, author } = request.body;
         console.log()
