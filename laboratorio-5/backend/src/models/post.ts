@@ -11,6 +11,11 @@ const forbiddenNames = ["Huevito Rey", "Matias Toro", "Memes es mal Ramo"];
 
 const postSchema = new mongoose.Schema(
   {
+    id: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     content: {
       type: String,
       minLength: 1,
