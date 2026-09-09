@@ -1,8 +1,8 @@
 import { Box, Card, CardActions, CardContent, CardHeader, IconButton, Typography } from '@mui/material'
-import type { Post } from '../types/posts'
+import type { Post } from '../types/posts.ts'
 import { Comment, Forum, PushPin, Reply, ThumbDown, ThumbUp } from '@mui/icons-material'
 import { useState } from 'react'
-import threads from '../services/threads'
+import threads from '../services/threads.ts'
 import { Link, useNavigate } from 'react-router-dom'
 
 interface PostBoxProps {

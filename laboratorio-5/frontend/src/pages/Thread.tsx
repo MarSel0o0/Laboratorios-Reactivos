@@ -1,10 +1,10 @@
 import { Box, CircularProgress, Paper, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import type { Post } from '../types/posts'
-import threads from '../services/threads'
+import type { Post } from '../types/posts.ts'
+import threads from '../services/threads.ts'
 import { useParams } from 'react-router-dom'
-import PostForm from '../components/PostForm'
-import PostBox from '../components/PostBox'
+import PostForm from '../components/PostForm.tsx'
+import PostBox from '../components/PostBox.tsx'
 
 interface ThreadProps {
   setToast: (toast: { message: string, severity: 'success' | 'error' } | null) => void

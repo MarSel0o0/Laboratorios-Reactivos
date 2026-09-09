@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Threads from './pages/Threads'
-import Thread from './pages/Thread'
+import Threads from './pages/Threads.tsx'
+import Thread from './pages/Thread.tsx'
 import { useState } from 'react'
 import { Alert, Snackbar } from '@mui/material'
 
@@ -23,7 +23,7 @@ function App() {
           {toast?.message}
         </Alert>
       </Snackbar>
-      <BrowserRouter basename="/threads">
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Threads setToast={setToast} />} />
           <Route path="/:id" element={<Thread setToast={setToast} />} />

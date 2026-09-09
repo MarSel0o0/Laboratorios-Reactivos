@@ -1,7 +1,7 @@
 import axios from 'axios'
-import type { Post } from '../types/posts'
+import type { Post } from '../types/posts.ts'
 
-const baseUrl = `/threads`
+const baseUrl = `/api/threads`
 
 const getAll = () => {
   const request = axios.get<Post[]>(`${baseUrl}/`)
@@ -36,7 +36,7 @@ const createComment = (data: CommentCreateData, threadId: number) => {
 
 const update = (id: number, newObject: Post) => {
   return axios
-    .put<Post>(`/posts/${id}`, newObject)
+    .put<Post>(`/api/posts/${id}`, newObject)
     .then(request => request.data)
 }
 

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import express from "express";
 
 const mongoUrl = process.env.MONGODB_URI;
 
