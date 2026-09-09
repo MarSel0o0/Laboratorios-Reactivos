@@ -42,10 +42,12 @@ const postSchema = new mongoose.Schema(
 
 
 postSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    const { _id, __v, ...rest } = returnedObject;
-    return { ...rest, id: _id.toString() };
-  },
+  transform: (document,
+     returnedObject:{ _id?: mongoose.Types.ObjectId, __v?: number }
+  ) => { 
+    delete returnedObject.__v;
+    delete returnedObject._id;
+   },
 });
 
 export const Post = mongoose.model("Post", postSchema);
