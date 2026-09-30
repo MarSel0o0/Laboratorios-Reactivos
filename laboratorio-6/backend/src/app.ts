@@ -9,7 +9,7 @@ app.use(express.json());
 const requestLogger = (
   request: Request,
   response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.log("Method:", request.method);
   console.log("Path:  ", request.path);
@@ -53,7 +53,8 @@ app.post("/api/threads", (request, response, next) => {
     thread: null,
   });
 
-  post.save()
+  post
+    .save()
     .then((savedPost) => {
       response.status(201).json(savedPost);
     })
@@ -64,18 +65,32 @@ app.post("/api/threads/:id", (request, response, next) => {
   const body = request.body;
   const threadId = request.params.id;
 
-  console.log(request.params)
+  Promise.all([
+    PostModel.findById(threadId),
+    body.parent ? PostModel.findById(body.parent) : null,
+  ])
+    .then(([thread, parent]) => {
+      if (!thread) {
+        response.status(404).json({ error: "Thread not found" });
+        return;
+      }
 
-  const post = new PostModel({
-    content: body.content,
-    author: body.author,
-    thread: threadId,
-    parent: body.parent,
-  });
-
-  post.save()
+      if (parent && parent.thread?.toString() !== threadId) {
+        response
+          .status(400)
+          .json({ error: "Parent post is not part of the thread" });
+        return;
+      }
+      const post = new PostModel({
+        content: body.content,
+        author: body.author,
+        thread: threadId,
+        parent: body.parent,
+      });
+      return post.save();
+    })
     .then((savedPost) => {
-      response.status(201).json(savedPost);
+      if (savedPost) response.status(201).json(savedPost);
     })
     .catch((error) => next(error));
 });
@@ -99,7 +114,7 @@ const errorHandler = (
   error: { name: string; message: string },
   request: Request,
   response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error(error.message);
 
@@ -112,6 +127,11 @@ const errorHandler = (
   next(error);
 };
 
+const notFoundHandler = (request: Request, response: Response) => {
+  response.status(404).json({ error: "Not Found" });
+};
+
+app.use(notFoundHandler);
 app.use(errorHandler);
 app.use(express.static("dist"));
 
