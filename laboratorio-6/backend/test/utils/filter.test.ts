@@ -1,9 +1,9 @@
 import { describe, test } from "node:test";
 import assert from "node:assert";
-import { Post } from "../../src/models/posts.ts";
+import { Post } from "../../src/models/posts";
 
-import { filterPostsByWord } from "../../src/utils/post_utils.ts";
-import { initialPosts } from "./data.ts";
+import { filterPostsByWord } from "../../src/utils/post_utils";
+import { initialPosts } from "./data";
 
 describe("filterPostsByWord", () => {
     test("filter of palabra", () => {

@@ -14,6 +14,7 @@ if (url) {
 }
 
 export interface Post {
+  id?: string
   content: string
   author?: string
   thread?: mongoose.Types.ObjectId
