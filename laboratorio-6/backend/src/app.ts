@@ -60,11 +60,26 @@ app.post("/api/threads", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/threads/:id", (request, response, next) => {
+// P5 -----------------------------------------------------------------------
+
+app.post("/api/threads/:id", async (request, response) => {
   const body = request.body;
   const threadId = request.params.id;
 
-  console.log(request.params)
+  const thread = await PostModel.findById(threadId);
+  if (!thread) {
+    response.status(404).json({ error: "thread not found" });
+    return;
+  }
+
+  const parent = body.parent
+    ? await PostModel.findById(body.parent)
+    : null;
+
+  if (body.parent && (!parent || parent.thread?.toString() !== threadId)) {
+    response.status(400).json({ error: "parent does not belong to thread" });
+    return;
+  }
 
   const post = new PostModel({
     content: body.content,
@@ -73,31 +88,48 @@ app.post("/api/threads/:id", (request, response, next) => {
     parent: body.parent,
   });
 
-  post.save()
-    .then((savedPost) => {
-      response.status(201).json(savedPost);
-    })
-    .catch((error) => next(error));
+  const savedPost = await post.save();
+  response.status(201).json(savedPost);
 });
 
-app.put("/api/posts/:id", (request, response, next) => {
+// ---------------------------------------------------------------------------
+
+// P6 ------------------------------------------------------------------------
+app.put("/api/posts/:id", async (request, response) => {
   const body = request.body;
   const id = request.params.id;
 
-  PostModel.findByIdAndUpdate(id, body, { new: true })
-    .then((updatedPost) => {
-      if (updatedPost) {
-        response.json(updatedPost);
-      } else {
-        response.status(404).end();
-      }
-    })
-    .catch((error) => next(error));
+  const updatedPost = await PostModel.findByIdAndUpdate(
+    id,
+    body,
+    { new: true, runValidators: true }
+  );
+
+  if (updatedPost) {
+    response.json(updatedPost);
+  } else {
+    response.status(404).end();
+  }
 });
+
+app.use(express.static("dist"));
+
+// ---------------------------------------------------------------------------
+
+// P3
+
+const unknownEndpoint = (
+  _request: Request,
+  response: Response
+) => {
+  response.status(404).json({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 const errorHandler = (
   error: { name: string; message: string },
-  request: Request,
+  _request: Request,
   response: Response,
   next: NextFunction
 ) => {
@@ -105,14 +137,13 @@ const errorHandler = (
 
   console.error(error.name);
   if (error.name === "CastError") {
-    response.status(400).send({ error: "malformatted id" });
+    return response.status(400).json({ error: "malformatted id" });
   } else if (error.name === "ValidationError") {
-    response.status(400).json({ error: error.message });
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };
 
 app.use(errorHandler);
-app.use(express.static("dist"));
 
 export default app;

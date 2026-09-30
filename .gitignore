@@ -1,2 +1,7 @@
 **/node_modules/**
 **/*.pdf
+**/package-lock.json
+**/.env
+**/out/
+**/postman
+**/.postman

@@ -1,10 +1,10 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
 import mongoose, { Schema } from 'mongoose'
+import config from '../utils/config'
 
-const url = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DBNAME;
+
+
+const url = config.MONGODB_URI;
+const dbName = config.MONGODB_DBNAME;
 
 mongoose.set("strictQuery", false);
 if (url) {
@@ -24,7 +24,7 @@ export interface Post {
   dislikes: number
 }
 
-const BANNED = ["Huevito Rey", "Matías Toro", "Memes es mal ramo"];
+const BANNED = ["huevito rey", "matías toro", "memes es mal ramo"];
 function isNotBanned(v: string) {
   return !BANNED.includes(v.toLowerCase());
 }
