@@ -10,7 +10,13 @@ export interface UserData {
 // TODO (P1): campos, restricciones y transformación a JSON.
 const userSchema = new mongoose.Schema<UserData>({
   username: { type: String, required: true, unique: true },
-  passwordHash: String,
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Correo invalido"],
+  },
+  passwordHash: { type: String, required: true },
 });
 
 const User = mongoose.model<UserData>("User", userSchema);
