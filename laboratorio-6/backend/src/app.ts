@@ -9,7 +9,7 @@ app.use(express.json());
 const requestLogger = (
   request: Request,
   response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.log("Method:", request.method);
   console.log("Path:  ", request.path);
@@ -53,31 +53,50 @@ app.post("/api/threads", (request, response, next) => {
     thread: null,
   });
 
-  post.save()
+  post
+    .save()
     .then((savedPost) => {
       response.status(201).json(savedPost);
     })
     .catch((error) => next(error));
 });
 
-app.post("/api/threads/:id", (request, response, next) => {
-  const body = request.body;
-  const threadId = request.params.id;
+const BANNED = ["Huevito rey", "Matías Toro", "Memes es mal ramo"];
 
-  console.log(request.params)
+app.post("/api/threads/:id", async (request, response, next) => {
+  try {
+    const body = request.body;
+    const threadId = request.params.id;
 
-  const post = new PostModel({
-    content: body.content,
-    author: body.author,
-    thread: threadId,
-    parent: body.parent,
-  });
+    const thread = await PostModel.findById(threadId);
 
-  post.save()
-    .then((savedPost) => {
-      response.status(201).json(savedPost);
-    })
-    .catch((error) => next(error));
+    if (!thread) {
+      return response.status(404).end();
+    }
+
+    if (body.parent) {
+      const parent = await PostModel.findById(body.parent);
+
+      if (!parent || parent.thread?.toString() !== threadId) {
+        return response.status(400).json({
+          error: "parent does not belong to thread",
+        });
+      }
+    }
+
+    const post = new PostModel({
+      content: body.content,
+      author: body.author,
+      thread: threadId,
+      parent: body.parent,
+    });
+
+    const savedPost = await post.save();
+
+    response.status(201).json(savedPost);
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.put("/api/posts/:id", (request, response, next) => {
@@ -95,24 +114,31 @@ app.put("/api/posts/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
+// P3
+
+const unknownEndpoint = (_request: Request, response: Response) => {
+  response.status(404).json({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
 const errorHandler = (
   error: { name: string; message: string },
-  request: Request,
+  _request: Request,
   response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error(error.message);
 
   console.error(error.name);
   if (error.name === "CastError") {
-    response.status(400).send({ error: "malformatted id" });
+    return response.status(400).json({ error: "malformatted id" });
   } else if (error.name === "ValidationError") {
-    response.status(400).json({ error: error.message });
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };
 
 app.use(errorHandler);
-app.use(express.static("dist"));
 
 export default app;
