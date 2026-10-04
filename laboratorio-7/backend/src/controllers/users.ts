@@ -1,12 +1,12 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import middleware from "../utils/middleware";
+import { validatePassword } from "../utils/middleware";
 import User from "../models/user";
 
 const router = express.Router();
 
 // TODO (P2): crear un usuario guardando el hash de la contraseña.
-router.post("/", middleware.validatePassword, async (request, response) => {
+router.post("/", validatePassword, async (request, response) => {
   const { username, email, password } = request.body;
 
   const saltRounds = 10;

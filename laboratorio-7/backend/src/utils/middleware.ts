@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import config from "./config";
 import logger from "./logger";
 
 const requestLogger = (
@@ -17,7 +19,11 @@ const unknownEndpoint = (request: Request, response: Response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 
-const validatePassword = (req: Request, res: Response, next: NextFunction) => {
+export const validatePassword = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { password } = req.body;
 
   if (typeof password !== "string" || password.length < 3) {
@@ -49,11 +55,11 @@ const errorHandler = (
     } else {
       response.status(400).json({ error: "duplicate key" });
     }
+  } else if (error.name === "TokenExpiredError") {
+    response.status(401).json({ error: "invalid token" });
   }
-  // TODO (P4): token expirado (TokenExpiredError)
-  else {
-    next(error);
-  }
+
+  next(error);
 };
 
 // TODO (P4): verificar el JWT de la cookie `token` y el header `X-CSRF-Token`,
@@ -63,7 +69,26 @@ export const withUser = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  res.status(501).json({ error: "not implemented" });
+  try {
+    const token = req.cookies?.token;
+    if (!token) res.status(401).json({ error: "missing token" });
+    else {
+      const decodedToken = jwt.verify(token, config.JWT_SECRET);
+      const csrfToken = req.headers["x-csrf-token"];
+      if (
+        typeof decodedToken === "object" &&
+        decodedToken.id &&
+        decodedToken.csrf === csrfToken
+      ) {
+        req.userId = decodedToken.id;
+        next();
+      } else {
+        res.status(401).json({ error: "invalid token" });
+      }
+    }
+  } catch (error) {
+    res.status(401).json({ error: "invalid token" });
+  }
 };
 
 // TODO (P5): withOptionalUser
@@ -72,5 +97,4 @@ export default {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  validatePassword,
 };
