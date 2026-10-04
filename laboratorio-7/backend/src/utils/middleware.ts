@@ -91,7 +91,34 @@ export const withUser = async (
   }
 };
 
-// TODO (P5): withOptionalUser
+export const withOptionalUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const token = req.cookies?.token;
+    if (token) {
+      const decodedToken = jwt.verify(token, config.JWT_SECRET);
+      const csrfToken = req.headers["x-csrf-token"];
+      if (
+        typeof decodedToken === "object" &&
+        decodedToken.id &&
+        decodedToken.csrf === csrfToken
+      ) {
+        req.userId = decodedToken.id;
+        req.body.author = decodedToken.username;
+      } else {
+        res.status(401).json({ error: "invalid token" });
+        return;
+      }
+    }
+    if (!req.body.author) req.body.author = "Anónimo";
+    next();
+  } catch (error) {
+    res.status(401).json({ error: "invalid token" });
+  }
+};
 
 export default {
   requestLogger,

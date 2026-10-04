@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export interface Post {
   content: string;
+  author: string;
   user?: mongoose.Types.ObjectId;
   thread?: mongoose.Types.ObjectId;
   parent?: mongoose.Types.ObjectId;
@@ -13,12 +14,21 @@ export interface Post {
 
 const BANNED = ["huevito rey", "matías toro", "memes es mal ramo"];
 function isNotBanned(v: string) {
-  return !BANNED.includes(v.toLowerCase());
+  return !BANNED.some((banned) => banned === v.toLowerCase());
 }
 
 const postSchema = new mongoose.Schema<Post>(
   {
     content: { type: String, required: true, minlength: 1, maxlength: 300 },
+    author: {
+      type: String,
+      validate: {
+        validator: function (v: string) {
+          return isNotBanned(v);
+        },
+        message: (props) => `${props.value} is not allowed as a username!`,
+      },
+    },
     user: { type: Schema.Types.ObjectId, ref: "User", default: null },
     thread: { type: Schema.Types.ObjectId, ref: "Post", default: null },
     parent: { type: Schema.Types.ObjectId, ref: "Post", default: null },
