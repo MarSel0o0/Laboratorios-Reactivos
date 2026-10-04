@@ -1,21 +1,33 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Threads from './pages/Threads'
-import Thread from './pages/Thread'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import { useState } from 'react'
-import { Alert, Snackbar } from '@mui/material'
-import type { User } from './types/users'
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Threads from "./pages/Threads";
+import Thread from "./pages/Thread";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { useState, useEffect } from "react";
+import { Alert, Snackbar } from "@mui/material";
+import type { User } from "./types/users";
+import { restoreLogin } from "./services/login";
 
 function App() {
-  const [toast, setToast] = useState<{ message: string, severity: 'success' | 'error' } | null>(null)
-  const [user, setUser] = useState<User | null>(null)
+  const [toast, setToast] = useState<{
+    message: string;
+    severity: "success" | "error";
+  } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   // TODO (P6): restaurar la sesión al montar la aplicación.
+  useEffect(() => {
+    const init = async () => {
+      const user = await restoreLogin();
+      setUser(user);
+    };
+
+    init();
+  }, []);
 
   const handleClose = () => {
-    setToast(null)
-  }
+    setToast(null);
+  };
 
   return (
     <>
@@ -23,23 +35,31 @@ function App() {
         open={Boolean(toast)}
         autoHideDuration={5000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert severity={toast?.severity}>
-          {toast?.message}
-        </Alert>
+        <Alert severity={toast?.severity}>{toast?.message}</Alert>
       </Snackbar>
       <BrowserRouter>
         <Routes>
-          <Route path="/threads" element={<Threads setToast={setToast} user={user} setUser={setUser} />} />
-          <Route path="/threads/:id" element={<Thread setToast={setToast} user={user} setUser={setUser} />} />
+          <Route
+            path="/threads"
+            element={
+              <Threads setToast={setToast} user={user} setUser={setUser} />
+            }
+          />
+          <Route
+            path="/threads/:id"
+            element={
+              <Thread setToast={setToast} user={user} setUser={setUser} />
+            }
+          />
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/threads" replace />} />
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
