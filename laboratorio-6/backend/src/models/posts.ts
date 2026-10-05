@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import mongoose, { Schema } from 'mongoose'
+import app from '../app';
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DBNAME;
@@ -58,5 +59,7 @@ postSchema.set("toJSON", {
     delete returnedObject.__v;
   },
 });
+
+
 
 export default PostModel;

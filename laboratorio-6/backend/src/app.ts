@@ -112,6 +112,11 @@ const errorHandler = (
   next(error);
 };
 
+const notFoundHandler = (request: Request, response: Response) => {
+  response.status(404).json({ error: "Not Found" });
+};
+
+app.use(notFoundHandler);
 app.use(errorHandler);
 app.use(express.static("dist"));
 
