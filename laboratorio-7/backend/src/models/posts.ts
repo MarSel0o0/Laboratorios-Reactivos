@@ -9,6 +9,7 @@ export interface Post {
   updatedAt: Date;
   likes: number;
   dislikes: number;
+  user?: mongoose.Types.ObjectId; 
 }
 
 const BANNED = ["huevito rey", "matías toro", "memes es mal ramo"];

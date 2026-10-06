@@ -17,7 +17,8 @@ const userSchema = new mongoose.Schema<UserData>({
     validator:
      function (email:string) {
       return validateregex(email)
-    }
+    },
+    message : "Ta malo"
   }
   },
   passwordHash: { type: String, required: true},
