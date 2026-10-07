@@ -1,5 +1,7 @@
 import express from "express";
 import PostModel from "../models/posts";
+import { withOptionalUser } from "../utils/middleware";
+import User from "../models/user";
 
 const router = express.Router();
 
@@ -27,13 +29,22 @@ router.get("/threads/:id", async (request, response) => {
 });
 
 // TODO (P5): el autor depende de la sesión.
-router.post("/threads", async (request, response) => {
+router.post("/threads", withOptionalUser, async (request, response) => {
+
+  if (request.userId) {
+    const authorUser = await User.findById(request.userId);
+    if (authorUser) {
+      request.body.author = authorUser.username;
+    }
+  }
+
   const { content, author } = request.body;
 
   const post = new PostModel({
     content,
-    author,
+    author: author ? author : "Anonymous",
     thread: null,
+    user: request.userId || null,
   });
 
   const savedPost = await post.save();
@@ -41,14 +52,23 @@ router.post("/threads", async (request, response) => {
 });
 
 // TODO (P5): el autor depende de la sesión.
-router.post("/threads/:id", async (request, response) => {
+router.post("/threads/:id", withOptionalUser, async (request, response) => {
+
+  if (request.userId) {
+    const authorUser = await User.findById(request.userId);
+    if (authorUser) {
+      request.body.author = authorUser.username;
+    }
+  }
+
   const { content, author, parent } = request.body;
 
   const post = new PostModel({
     content,
-    author,
+    author: author ? author : "Anonymous",
     thread: request.params.id,
     parent: parent || null,
+    user: request.userId || null,
   });
 
   const savedPost = await post.save();

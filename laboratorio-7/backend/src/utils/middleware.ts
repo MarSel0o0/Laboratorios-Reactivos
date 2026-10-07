@@ -80,5 +80,17 @@ export const withUser = async (
 };
 
 // TODO (P5): withOptionalUser
+export const withOptionalUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.cookies?.token;
+  if (!token) {
+    next();
+    return;
+  }
+  withUser(req, res, next);
+};
 
 export default { requestLogger, unknownEndpoint, errorHandler };

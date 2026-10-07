@@ -24,8 +24,6 @@ router.post("/", async (request, response) => {
   const savedUser = await user.save(); // Express se encargará de manejar los errores de validación y duplicados, gracias al middleware de manejo de errores.
 
   response.status(201).json(savedUser);
-
-  // TODO (P2): guardar el usuario en la base de datos.
 });
 
 // TODO (P2): listar los usuarios.
