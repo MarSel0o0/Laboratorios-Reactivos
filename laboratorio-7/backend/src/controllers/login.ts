@@ -4,11 +4,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import config from "../utils/config";
+import { withUser } from "../utils/middleware";
 
 const router = express.Router();
 
 // TODO (P3): login con el JWT en una cookie httpOnly y el token CSRF en un header.
-router.post("/", async (request, response) => {
+router.post("/", withUser , async (request, response) => {
   const { username, password } = request.body;
 
   const user = await User.findOne({ username });
@@ -43,13 +44,15 @@ router.post("/", async (request, response) => {
 });
 
 // TODO (P4): usuario de la sesión actual (protegido con withUser).
-router.get("/me", async (request, response) => {
-  response.status(501).json({ error: "not implemented" });
+router.get("/me", withUser, async (request, response) => {
+  const user = await User.findById(request.userId);
+  response.status(200).json(user);
 });
 
 // TODO (P4): cerrar sesión.
 router.post("/logout", async (request, response) => {
-  response.status(501).json({ error: "not implemented" });
+  response.clearCookie("token");
+  response.status(200).send({ message: "Logged out successfully" });
 });
 
 export default router;

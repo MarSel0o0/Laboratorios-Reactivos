@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import logger from "./logger";
+import config from "./config";
+import jwt from "jsonwebtoken";
 
 const requestLogger = (
   request: Request,
@@ -38,6 +40,12 @@ const errorHandler = (
     response.status(400).json({ error: "username or email already exists" });
   }
   // TODO (P4): token expirado (TokenExpiredError)
+  else if (
+    error.name === "TokenExpiredError" ||
+    error.name === "JsonWebTokenError"
+  ) {
+    response.status(401).json({ error: "token invalid" });
+  }
   else {
     next(error);
   }
@@ -50,7 +58,25 @@ export const withUser = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  res.status(501).json({ error: "not implemented" });
+  const token = req.cookies?.token;
+  if (!token) {
+    res.status(401).json({ error: "token missing" });
+    return;
+  }
+
+  const decodedToken = jwt.verify(token, config.JWT_SECRET);
+  const csrfToken = req.headers["x-csrf-token"];
+
+  if (
+    typeof decodedToken === "object" &&
+    decodedToken.id &&
+    decodedToken.csrf === csrfToken
+  ) {
+    req.userId = decodedToken.id;
+    next();
+  } else {
+    res.status(401).json({ error: "invalid token" });
+  }
 };
 
 // TODO (P5): withOptionalUser
