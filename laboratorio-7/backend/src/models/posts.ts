@@ -9,6 +9,7 @@ export interface Post {
   updatedAt: Date;
   likes: number;
   dislikes: number;
+  user: mongoose.Types.ObjectId;
 }
 
 const BANNED = ["huevito rey", "matías toro", "memes es mal ramo"];
@@ -30,6 +31,7 @@ const postSchema = new mongoose.Schema<Post>(
     parent: { type: Schema.Types.ObjectId, ref: "Post", default: null },
     likes: { type: Number, default: 0 },
     dislikes: { type: Number, default: 0 },
+    user: { type: Schema.Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,
