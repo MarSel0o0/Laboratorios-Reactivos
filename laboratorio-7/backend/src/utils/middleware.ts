@@ -31,6 +31,12 @@ const errorHandler = (
     response.status(400).json({ error: error.message });
   }
   // TODO (P2): username o email repetido (E11000)
+  else if (
+    error.name === "MongoServerError" &&
+    error.message.includes("E11000 duplicate key error")
+  ) {
+    response.status(400).json({ error: "username or email already exists" });
+  }
   // TODO (P4): token expirado (TokenExpiredError)
   else {
     next(error);
