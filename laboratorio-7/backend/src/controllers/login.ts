@@ -1,6 +1,6 @@
 import express from "express";
 import User from "../models/user";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import config from "../utils/config";
@@ -9,7 +9,7 @@ import { withUser } from "../utils/middleware";
 const router = express.Router();
 
 // TODO (P3): login con el JWT en una cookie httpOnly y el token CSRF en un header.
-router.post("/", withUser , async (request, response) => {
+router.post("/" , async (request, response) => {
   const { username, password } = request.body;
 
   const user = await User.findOne({ username });
