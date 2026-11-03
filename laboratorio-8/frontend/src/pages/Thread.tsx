@@ -1,7 +1,7 @@
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import type { Post } from '../types/posts'
 import threads from '../services/threads'

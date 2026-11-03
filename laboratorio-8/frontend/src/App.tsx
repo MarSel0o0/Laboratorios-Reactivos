@@ -5,8 +5,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import { useEffect, useState } from 'react'
 import loginService from './services/login'
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
 import type { User } from './types/users'
 
 function App() {
