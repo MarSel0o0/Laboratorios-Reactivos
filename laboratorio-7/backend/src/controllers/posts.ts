@@ -44,7 +44,7 @@ router.post("/threads", withOptionalUser, async (request, response) => {
     content,
     author: author ? author : "Anonymous",
     thread: null,
-    user: request.userId || null,
+    user: request.userId ? request.userId : null,
   });
 
   const savedPost = await post.save();
@@ -67,8 +67,8 @@ router.post("/threads/:id", withOptionalUser, async (request, response) => {
     content,
     author: author ? author : "Anonymous",
     thread: request.params.id,
-    parent: parent || null,
-    user: request.userId || null,
+    parent: parent ? parent : null,
+    user: request.userId ? request.userId : null,
   });
 
   const savedPost = await post.save();
