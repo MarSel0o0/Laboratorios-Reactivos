@@ -44,6 +44,7 @@ function PostForm({ parentId, onSubmit, onCancel }: PostFormProps) {
           label="Name (Optional)"
           variant="outlined"
           size="small"
+          slotProps={{ htmlInput: { 'data-testid': 'author' } }}
           value={author}
           onChange={e => setAuthor(e.target.value)}
         />
@@ -53,6 +54,7 @@ function PostForm({ parentId, onSubmit, onCancel }: PostFormProps) {
           multiline
           rows={4}
           required
+          slotProps={{ htmlInput: { 'data-testid': 'content' } }}
           value={content}
           onChange={(e) => {
             setContent(e.target.value)

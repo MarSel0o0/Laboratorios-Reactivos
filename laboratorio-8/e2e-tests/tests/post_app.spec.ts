@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { createUser, login, resetDb } from './helper'
+import { createPost, createUser, login, resetDb } from './helper'
 
 test.describe('Thread app', () => {
   // Todos los tests comparten la misma base de datos: no pueden correr en paralelo
@@ -12,6 +12,15 @@ test.describe('Thread app', () => {
   });
 
   test('can render "/threads', async ({ page }) => {
+    await page.goto('/threads')
+  });
+
+});
+
+test.describe('flujo login', () => {
+  test.beforeEach(async ({ page, request }) => {
+    await resetDb(request);
+    await createUser(request, { username: 'marselo', email: 'marselo@marselo.com', password: 'hola' });
     await page.goto('/threads')
   });
 
@@ -48,5 +57,43 @@ test.describe('Thread app', () => {
     await expect(page.getByText('Invitado')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Logout' })).toHaveCount(0);
   })
+});
 
+test.describe('when logged in', () => {
+  test.beforeEach(async ({ page, request }) => {
+    await resetDb(request);
+    await createUser(request, { username: 'marselo', email: 'marselo@marselo.com', password: 'hola' });
+    await login(page, 'marselo', 'hola')
+    await expect(page.getByRole('button', { name: 'Logout' })).toBeVisible();
+  })
+
+  test('un usuario puede cerrar sesión', async ({ page }) => {
+    await page.getByRole('button', { name: 'Logout' }).click();
+
+    // Vuelve a verse como invitado, con las opciones de Login y Register
+    await expect(page.getByText('Invitado')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Logout' })).toHaveCount(0);
+
+    // La sesión no se restaura al recargar la página
+    await page.reload();
+    await expect(page.getByText('Invitado')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Logout' })).toHaveCount(0);
+  })
+})
+
+test.describe('when not logged in', () => {
+  test.beforeEach(async ({ page, request }) => {
+    await resetDb(request);
+    await page.goto('/threads')
+  })
+
+  test('un invitado puede crear un thread', async ({ page }) => {
+    await createPost(page, 'Comentario creado por playwright', 'Playwright');
+
+    // La página contiene el thread recién creado
+    const post = page.locator('.post').filter({ hasText: 'Comentario creado por playwright' });
+    await expect(post).toHaveCount(1);
+    await expect(post).toContainText('Playwright');
+  })
 })

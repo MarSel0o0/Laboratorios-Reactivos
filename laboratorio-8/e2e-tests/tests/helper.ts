@@ -25,4 +25,13 @@ const login = async (page: Page, username: string, password: string) => {
   await page.getByRole('button', { name: 'Sign In' }).click()
 }
 
-export { resetDb, createUser, login }
+// Publica un thread desde el formulario de /threads. El autor es opcional.
+const createPost = async (page: Page, content: string, author?: string) => {
+  if (author) {
+    await page.getByTestId('author').fill(author)
+  }
+  await page.getByTestId('content').fill(content)
+  await page.getByRole('button', { name: 'Post' }).click()
+}
+
+export { resetDb, createUser, login, createPost }
