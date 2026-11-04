@@ -1,8 +1,8 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import { brown } from '@mui/material/colors';
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import { brown } from '@mui/material/colors'
 import { useState } from 'react'
 
 interface PostFormProps {

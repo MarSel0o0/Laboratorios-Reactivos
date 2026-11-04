@@ -80,6 +80,16 @@ test.describe('when logged in', () => {
     await expect(page.getByText('Invitado')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Logout' })).toHaveCount(0);
   })
+
+  test('el autor del thread es el nombre de usuario de la sesión', async ({ page }) => {
+    // Sin indicar autor en el formulario
+    await createPost(page, 'Comentario de usuario autenticado');
+
+    const post = page.locator('.post').filter({ hasText: 'Comentario de usuario autenticado' });
+    await expect(post).toHaveCount(1);
+    await expect(post).toContainText('marselo');
+    await expect(post).not.toContainText('Anonymous');
+  })
 })
 
 test.describe('when not logged in', () => {
@@ -95,5 +105,17 @@ test.describe('when not logged in', () => {
     const post = page.locator('.post').filter({ hasText: 'Comentario creado por playwright' });
     await expect(post).toHaveCount(1);
     await expect(post).toContainText('Playwright');
+  })
+
+  test('no se puede crear un thread con el contenido vacío', async ({ page }) => {
+    // Espera a que termine de cargar la lista antes de comprobar que está vacía
+    await expect(page.getByText('Han creado 0 threads!')).toBeVisible();
+
+    await page.getByTestId('author').fill('Playwright');
+    await page.getByRole('button', { name: 'Post' }).click();
+
+    // No se publicó ningún thread
+    await expect(page.locator('.post')).toHaveCount(0);
+    await expect(page.getByText('Han creado 0 threads!')).toBeVisible();
   })
 })
