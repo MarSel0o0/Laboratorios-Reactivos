@@ -2,14 +2,14 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import loginService from '../services/login'
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import Link from '@mui/material/Link'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import type { User } from '../types/users'
 
 interface LoginProps {
@@ -43,7 +43,7 @@ const Login = ({ setUser }: LoginProps) => {
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+            <Alert severity="error" className="error" sx={{ width: '100%', mb: 2 }}>
               {error}
             </Alert>
           )}
@@ -58,6 +58,7 @@ const Login = ({ setUser }: LoginProps) => {
               name="username"
               autoComplete="username"
               autoFocus
+              slotProps={{ htmlInput: { 'data-testid': 'username' } }}
               value={username}
               onChange={e => setUsername(e.target.value)}
             />
@@ -70,6 +71,7 @@ const Login = ({ setUser }: LoginProps) => {
               type="password"
               id="password"
               autoComplete="current-password"
+              slotProps={{ htmlInput: { 'data-testid': 'password' } }}
               value={password}
               onChange={e => setPassword(e.target.value)}
             />

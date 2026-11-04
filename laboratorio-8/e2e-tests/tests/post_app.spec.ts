@@ -37,8 +37,9 @@ test.describe('Thread app', () => {
     // El usuario no existe en la base de datos
     await login(page, 'noexiste', 'incorrecta');
 
-    // Muestra el error y permanece en /login sin iniciar sesión
-    await expect(page.getByText('Invalid username or password')).toBeVisible();
+    // Muestra el error y permanece en /login sin iniciar sesión]
+    const errorDiv = page.locator('.error')
+    await expect(errorDiv).toContainText('Invalid username or password');
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible();
 
