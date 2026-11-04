@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { createPost, createUser, login, resetDb } from './helper'
+import { createPost, createThread, createUser, login, resetDb, sampleComments, sampleThread } from './helper'
 
 test.describe('Thread app', () => {
   // Todos los tests comparten la misma base de datos: no pueden correr en paralelo
@@ -112,10 +112,64 @@ test.describe('when not logged in', () => {
     await expect(page.getByText('Han creado 0 threads!')).toBeVisible();
 
     await page.getByTestId('author').fill('Playwright');
-    await page.getByRole('button', { name: 'Post' }).click();
+    await page.getByRole('button', { name: 'Post', exact: true }).click();
 
     // No se publicó ningún thread
     await expect(page.locator('.post')).toHaveCount(0);
     await expect(page.getByText('Han creado 0 threads!')).toBeVisible();
+  })
+})
+
+test.describe('thread page', () => {
+  test.beforeEach(async ({ page, request }) => {
+    await resetDb(request);
+    const threadId = await createThread(request); // Crea el thread con los dos comentarios
+    await page.goto(`/threads/${threadId}`)
+    // Espera a que carguen el thread y sus comentarios
+    await expect(page.locator('.post')).toHaveCount(1 + sampleComments.length);
+  })
+
+  test('se muestran los comentarios del thread', async ({ page }) => {
+    for (const comment of sampleComments) {
+      const post = page.locator('.post').filter({ hasText: comment.content });
+      await expect(post).toHaveCount(1);
+      await expect(post).toContainText(comment.author);
+    }
+    await expect(page.getByText(`Han creado ${sampleComments.length} comentarios!`)).toBeVisible();
+  })
+
+  test('el contenido del thread se muestra al inicio del listado', async ({ page }) => {
+    const first = page.locator('.post').first();
+    await expect(first).toContainText(sampleThread.content);
+    await expect(first).toContainText(sampleThread.author);
+
+    // Los comentarios van después del thread, en orden de creación
+    await expect(page.locator('.post').nth(1)).toContainText(sampleComments[0].content);
+    await expect(page.locator('.post').nth(2)).toContainText(sampleComments[1].content);
+  })
+
+  test('hay un formulario para crear comentarios al inicio de la página', async ({ page }) => {
+    const author = page.getByTestId('author');
+    const content = page.getByTestId('content');
+    await expect(author).toBeVisible();
+    await expect(content).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Post', exact: true })).toBeVisible();
+
+    // El nombre es opcional, el contenido es obligatorio
+    await expect(page.getByLabel('Name (Optional)')).toBeVisible();
+    await expect(content).toHaveAttribute('required', '');
+    await expect(author).not.toHaveAttribute('required', '');
+
+    // Permite escribir ambos campos
+    await author.fill('Playwright');
+    await content.fill('Comentario escrito en el formulario');
+    await expect(author).toHaveValue('Playwright');
+    await expect(content).toHaveValue('Comentario escrito en el formulario');
+
+    // En el DOM, el formulario aparece antes que cualquier post del listado
+    // (el selector múltiple devuelve los elementos en orden de documento)
+    const firstElement = page.locator('form, .post').first();
+    await expect(firstElement.getByTestId('content')).toBeVisible();
+    await expect(firstElement).not.toHaveClass(/\bpost\b/);
   })
 })
